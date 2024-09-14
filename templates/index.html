@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Market Platform</title>
+    
+    <!-- Include Roboto Slab from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Link to the corrected CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
     <!-- Include Socket.io and Chart.js if necessary -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <style>
@@ -21,7 +26,7 @@
 <body>
     <header>
         <img src="{{ url_for('static', filename='images/blockstocks_logo.png') }}" alt="BlockStocks Logo">
-        <h1>Welcome, {{ user_name }}!</h1>
+        <h1 class="roboto-slab">Welcome, {{ user_name }}!</h1>
     </header>
 
     <div class="main-container">
@@ -63,7 +68,7 @@
 
         <!-- Right Column: Graph -->
         <div class="graph-container">
-            <h2>Current Projected Block Price: $8.07</h2>
+            <h2 class="roboto-slab">Current Projected Block Price: $8.07</h2>
             <div style="width: 107%;">
                 <div id="chart"></div>
             </div>
@@ -87,11 +92,32 @@
                     line: {color: 'green'}
                 };
 
-                var layout = {
-                    title: 'Stock Price Over Time',
-                    xaxis: { title: 'Time' },
-                    yaxis: { title: 'Price' }
-                };
+var layout = {
+    title: {
+        text: 'Stock Price Over Time',
+        font: {
+            color: 'white'  // Title text color
+        }
+    },
+    xaxis: {
+        title: {
+            text: 'Time',
+            font: { color: 'white' }  // X-axis title color
+        },
+        tickfont: { color: 'white' },  // X-axis tick color
+        gridcolor: 'gray'  // Gridline color
+    },
+    yaxis: {
+        title: {
+            text: 'Price',
+            font: { color: 'white' }  // Y-axis title color
+        },
+        tickfont: { color: 'white' },  // Y-axis tick color
+        gridcolor: 'white'  // Gridline color
+            },
+            paper_bgcolor: '#A9A9A9',  // Background outside plotting area
+            plot_bgcolor: '#424549',  // Background inside plotting area
+        };
 
                 Plotly.newPlot('chart', [trace], layout);
             });
@@ -107,6 +133,7 @@
             <button id="buy_min">Buy Min</button>
             <button id="sell_max">Sell Max</button>
         </div>
+
 
         <!-- Current Offers -->
         <div class="info-box">
