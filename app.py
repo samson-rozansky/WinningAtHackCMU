@@ -65,6 +65,7 @@ def submit_transaction():
   # Ensure user is logged in
   if 'name' not in session:
     return redirect(url_for('login'))
+  print("SDFSDFSD")
 
   # Get form data
   name = session['name']

@@ -135,21 +135,59 @@ button[type="submit"] {
     margin: auto;
 }
 
-/* Right Column for the graph */
+/* Graph Container - Right half of the screen */
 .graph-container {
-    width: 60%; /* Graph takes up the right side */
+    width: 60%; /* Adjust width to take up more space */
+    margin: auto;
+    margin-top: -100px;
     text-align: center;
-    margin-top: -50px; /* Move the graph upwards */
 }
 
+/* Center the text inside the graph container */
 .graph-container h2 {
     font-size: 2rem;
     margin-bottom: 20px;
+    text-align: center;
+    display: block;
+    width: 100%;
 }
 
-/* Align Transaction History text */
-.transactions-history {
-    width: 88%;
-    text-align: right;
-    margin-top: -400px;
+/* Info Container for Prices, Offers, and Transaction History */
+.info-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -300px;
+    width: 60%; /* Shift the info container to the right */
+    margin-left: auto; /* Align the info container to the right side */
+}
+
+/* Info Box Styling */
+.info-box {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 25%; /* Make each info box take 25% of the available width */
+    text-align: center;
+}
+
+/* Transaction History box with larger width */
+.info-box.larger {
+    width: 45%; /* Give Transaction History more space */
+}
+
+/* Buttons for Offers and Prices */
+button {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
