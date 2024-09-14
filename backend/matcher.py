@@ -14,7 +14,18 @@ class AbstractTransaction:
         self.time = time if time else get_time()  # Use current time if none is provided
 
     def to_str(self):
-        return f"[{self.time}]: {self.payment}"
+        # Mapping lowercase payment methods to capitalized versions
+        payment_mapping = {
+            "zelle": "Zelle",
+            "paypal": "PayPal",
+            "cashapp": "CashApp",
+            "venmo": "Venmo"
+        }
+
+        # Capitalize each payment method in the list
+        capitalized_payments = [payment_mapping.get(p.lower(), p) for p in self.payment]
+
+        return f"{self.time}: {', '.join(capitalized_payments)}"
     
     def get_info(self):
         return {

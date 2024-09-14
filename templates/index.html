@@ -114,7 +114,7 @@
 </script>
         <!-- Right Column: Graph -->
         <div class="graph-container">
-            <h2 class="roboto-slab">Current Projected Block Price: $8.07</h2>
+            <h2 class="roboto-slab">Current Projected Block Price: <span id="block-price">$8.07</span></h2>
             <div style="width: 107%;">
                 <div id="chart"></div>
             </div>
@@ -204,7 +204,7 @@ var layout = {
         <div class="info-box larger">
             <h2>Transaction History</h2>
             <ul class="no-bullets">
-              {% for entry in log %}
+              {% for entry in log[-7:] %}
                   <li>{{ entry }}</li>
               {% endfor %}
             </ul>
@@ -262,5 +262,35 @@ var layout = {
         .catch(error => console.error('Error:', error));
       });
     </script>
+
+<script>
+    // Function to calculate the projected block price based on the time of day
+    function calculateBlockPrice() {
+      const now = new Date(); // Get current date and time
+      const hours = now.getHours(); // Get current hour (0-23)
+      const minutes = now.getMinutes(); // Get current minutes (0-59)
+      const seconds = now.getSeconds();
+  
+      // Example logic for price calculation based on time (you can modify this)
+      let basePrice = 8.50;
+      let fluctuation = Math.sin(Math.PI*(((60*hours+minutes)%240 - 120)/120)); // Adjust by hours and minutes
+  
+      let projectedPrice = (basePrice + fluctuation).toFixed(2); // Round to 2 decimal places
+      return projectedPrice;
+    }
+  
+    // Function to update the block price in the HTML
+    function updateBlockPrice() {
+      const priceElement = document.getElementById('block-price');
+      const calculatedPrice = calculateBlockPrice();
+      priceElement.innerText = `$${calculatedPrice}`;
+    }
+  
+    // Update the price when the page loads
+    window.onload = updateBlockPrice;
+  
+    // Optional: Continuously update the price every minute (or set your preferred interval)
+    setInterval(updateBlockPrice, 1000); // Update every 60 seconds
+  </script>
 </body>
 </html>

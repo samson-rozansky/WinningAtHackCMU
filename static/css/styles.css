@@ -187,6 +187,7 @@ button[type="submit"] {
     width: 25%; /* Make each info box take 25% of the available width */
     text-align: center;
     color: white;
+    margin: 0 3px
 }
 
 /* Style for disabling the button */
