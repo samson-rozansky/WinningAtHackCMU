@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_socketio import SocketIO, emit
 from datetime import datetime
+from hackcmu import analyzeData
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key to use sessions
@@ -26,21 +27,27 @@ def handle_login():
   # Redirect to main page
   return redirect(url_for('main_page'))
 
+@app.route('/get_stock_data')
+def get_stock_data():
+    # Return two separate lists for times and prices
+    times, prices= analyzeData.get_date_time()
+    return jsonify({'times': times, 'prices': prices})
+
 @app.route('/main')
 def main_page():
   # Ensure user is logged in
   if 'name' not in session:
     return redirect(url_for('login'))
-  labels = [
-      'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-  ]
-  data = [0, 10, 15, 8, 22, 18, 25]
-  return render_template('index.html', transactions=transactions, data=data, labels=labels, user_name=session['name'])
+  # labels = [
+      # 'January',
+        # 'February',
+        # 'March',
+        # 'April',
+        # 'May',
+        # 'June',
+  # ]
+  # data = [0, 10, 15, 8, 22, 18, 25]
+  return render_template('index.html', transactions=transactions, user_name=session['name'])
 
 @app.route('/submit', methods=['POST'])
 def submit_transaction():

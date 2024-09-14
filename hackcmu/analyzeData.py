@@ -13,12 +13,17 @@ def get_block_seller_amount(message) -> Optional[int]:
     if abs(closest-8.0)<6.0:
         return closest
   return None
-with open("test.txt") as f: 
-    for _ in range(100):
-        x = eval(f.readline())
-        for i in x:
-            if get_block_seller_amount(i) != None:
-                print(i['timestamp'], get_block_seller_amount(i))
-            # print(i['content'])
-            # print(numbers);
+def get_date_time():
+    a = []
+    b = []
+    with open("hackcmu/test.txt") as f: 
+        for _ in range(87):
+            x = eval(f.readline())
+            for i in x:
+                if get_block_seller_amount(i) != None:
+                    a.append(i['timestamp'])
+                    b.append(get_block_seller_amount(i))
+                # print(i['content'])
+                # print(numbers);
+    return a, b
 
