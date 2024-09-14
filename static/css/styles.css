@@ -172,6 +172,12 @@ button[type="submit"] {
     margin-left: auto; /* Align the info container to the right side */
 }
 
+/* Remove bullets from the unordered list */
+.no-bullets {
+    list-style-type: none; /* Removes the bullet point */
+    padding-left: 0;       /* Adjust padding to align with other elements */
+}
+
 /* Info Box Styling */
 .info-box {
     background-color: #36393e; /* Slightly darker grey */
@@ -183,9 +189,24 @@ button[type="submit"] {
     color: white;
 }
 
+/* Style for disabling the button */
+button.disabled {
+    background-color: #6c757d; /* Grey background */
+    color: #ccc; /* Lighter grey text */
+    cursor: not-allowed; /* Show a not-allowed cursor */
+    pointer-events: none; /* Disable clicking the button */
+    border: 1px solid #6c757d; /* Match the button border with the background */
+}
+
 /* Transaction History box with larger width */
 .info-box.larger {
     width: 45%; /* Give Transaction History more space */
+    text-align: left; /* Ensure text below the title is left-aligned */
+}
+
+/* Center the title inside the larger info box */
+.info-box.larger h2 {
+    text-align: center; /* Center the "Transaction History" title */
 }
 
 /* Buttons for Offers and Prices */

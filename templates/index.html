@@ -174,8 +174,8 @@ var layout = {
         <!-- Current Prices -->
         <div class="info-box">
             <h2>Current Prices</h2>
-            <p>min seller price: ${{ min_seller.min_price }}</p>
-            <p>max buyer price: ${{ max_buyer.max_price }}</p>
+            <p>Min. Seller Price: ${{ min_seller.min_price }}</p>
+            <p>Max. Buyer Price: ${{ max_buyer.max_price }}</p>
             <button id="buy_min">Buy Min</button>
             <button id="sell_max">Sell Max</button>
         </div>
@@ -184,12 +184,13 @@ var layout = {
         <!-- Current Offers -->
         <div class="info-box">
             <h2>Current Offers</h2>
-            {% if current_offer %}
-                <p>current_offer: {{ current_offer }}</p>
+           {% if current_offer %}
+                <p>{{ current_offer }}</p>
+                <button id="cancel-offer">Cancel Offer</button>
             {% else %}
                 <p>No Offer Made</p>
+                <button id="cancel-offer" class="disabled" disabled>Cancel Offer</button>
             {% endif %}
-            <button id="cancel-offer">Cancel Offer</button>
 
             {% if pending_transaction is not none %}
             <div id="accept-notif">
@@ -202,7 +203,7 @@ var layout = {
         <!-- Transaction History -->
         <div class="info-box larger">
             <h2>Transaction History</h2>
-            <ul>
+            <ul class="no-bullets">
               {% for entry in log %}
                   <li>{{ entry }}</li>
               {% endfor %}
