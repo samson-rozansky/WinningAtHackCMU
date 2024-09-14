@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { margin-bottom: 20px; }
+        input, select { padding: 5px; margin-top: 5px; }
+        .notifications { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ user_name }}!</h1>
+    <div class="notifications" id="notifications"></div>
+
+    <h2>Submit as Buyer or Seller</h2>
+    <form action="/submit" method="post">
+        <select name="role" required>
+            <option value="">Select Role</option>
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+        </select>
+
+        <input type="number" name="price" placeholder="Price" required>
+
+        <select name="payment" required>
+            <option value="">Select Payment</option>
+            <option value="zelle">Zelle</option>
+            <option value="paypal">PayPal</option>
+            <option value="venmo">Venmo</option>
+            <option value="cashapp">CashApp</option>
+            <option value="other">Other</option>
+        </select>
+
+        <input type="text" name="contactInfo" placeholder="Contact Info (Email, Phone)" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Transactions History</h2>
+    <ul>
+        {% for transaction in transactions %}
+            <li>{{ transaction.name }} bought a block for ${{ transaction.price }} on {{ transaction.date.strftime('%Y-%m-%d') }}</li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        const socket = io();
+
+        // Listen for real-time notifications
+        socket.on('notifySeller', (data) => {
+            const { buyer, seller } = data;
+            document.getElementById('notifications').innerText = `Seller ${seller.name}, you have a buyer (${buyer.name}) offering $${buyer.price}. You have 5 minutes to respond.`;
+        });
+
+        socket.on('notifyBuyer', (data) => {
+            const { buyer, seller } = data;
+            document.getElementById('notifications').innerText = `Buyer ${buyer.name}, seller (${seller.name}) is offering at $${seller.price}.`;
+        });
+    </script>
+</body>
+</html>
