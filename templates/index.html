@@ -11,6 +11,8 @@
         input, select { padding: 5px; margin-top: 5px; }
         .notifications { color: red; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Chartjs Charts</title>
 </head>
 <body>
     <h1>Welcome, {{ user_name }}!</h1>
@@ -46,6 +48,35 @@
         {% endfor %}
     </ul>
 
+    <div style="height: 50vh; width: 50%;">
+        <canvas id="myChart"></canvas>
+    </div>
+ 
+    <script>
+        const labels = {{ labels | tojson}};
+ 
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Sales',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: {{ data | tojson}},
+            }]
+        };
+ 
+        const config = {
+            type: 'line',
+            data: data,
+            options: { maintainAspectRatio: false }
+        };
+ 
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+ 
+    </script>
     <script>
         const socket = io();
 
