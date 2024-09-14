@@ -34,6 +34,20 @@ def get_stock_data():
     times, prices= analyzeData.get_date_time()
     return jsonify({'times': times, 'prices': prices})
 
+@app.route('/confirmation')
+def resolve_transaction():
+
+    # bi= Buyer(
+      # name="DNAIEL",
+      # id="danielqi",
+      # payment="idk",
+      # time=696996,
+      # contactInfo = "idk",
+      # max_price = float(1000),
+    # )
+    return render_template('confirmation.html', buyer=matcher.get_max_buyer(), seller=matcher.get_min_seller());
+    # return render_template('confirmation.html', buyer=bi, seller=matcher.get_min_seller());
+
 @app.route('/main')
 def main_page():
   if 'name' not in session:
@@ -93,10 +107,10 @@ def submit_transaction():
       max_price = float(price),
       contactInfo = contact_info
     )
+    matcher.add_buyer(transaction)
     if matcher.get_min_seller() != None and float(price)>=matcher.get_min_seller().min_price:
-        finishTransaction(transaction, matcher.get_min_seller());
-    else:
-        matcher.add_buyer(transaction)
+        print("WTFSDFSDF")
+        return finishTransaction();
   elif role == "seller":
     transaction = Seller(
       name=name,
@@ -106,17 +120,16 @@ def submit_transaction():
       min_price = float(price),
       contactInfo = contact_info
     )
+    matcher.add_seller(transaction)
     if matcher.get_max_buyer()!=None and float(price)<=matcher.get_max_buyer().max_price:
-        finishTransaction(matcher.get_max_buyer(), transaction);
-    else:
-        matcher.add_seller(transaction)
+        return finishTransaction();
   else:
     raise RuntimeError("Unrecognized Role")
 
   current_offers[id] = transaction
   return redirect(url_for('main_page'))
-def finishTransaction(buyer, seller):
-    print(buyer, seller);
+def finishTransaction():
+    return redirect(url_for('resolve_transaction'))
 
 @app.route("/cancel-offer", methods=["POST"])
 def cancel_offer():
