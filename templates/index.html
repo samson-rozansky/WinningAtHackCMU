@@ -8,7 +8,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Include Socket.io and Chart.js if necessary -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { margin-bottom: 20px; }
+        input, select { padding: 5px; margin-top: 5px; }
+        .notifications { color: red; }
+    </style>
+    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Chartjs Charts</title>
 </head>
 <body>
     <header>
@@ -56,11 +64,38 @@
         <!-- Right Column: Graph -->
         <div class="graph-container">
             <h2>Current Projected Block Price: $8.07</h2>
-            <div class="graph">
-                <canvas id="myChart"></canvas>
+            <div style="width: 107%;">
+                <div id="chart"></div>
             </div>
         </div>
     </div>
+    <!--<div id="chart"></div>-->
+ 
+    <script>
+        // Fetch stock data from Flask backend
+        fetch('/get_stock_data')
+            .then(response => response.json())
+            .then(data => {
+                var times = data.times;  // Access times list
+                var prices = data.prices;  // Access prices list
+
+                var trace = {
+                    x: times,
+                    y: prices,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: {color: 'green'}
+                };
+
+                var layout = {
+                    title: 'Stock Price Over Time',
+                    xaxis: { title: 'Time' },
+                    yaxis: { title: 'Price' }
+                };
+
+                Plotly.newPlot('chart', [trace], layout);
+            });
+    </script>
 
     <!-- New Container for Prices, Offers, and Transaction History -->
     <div class="info-container">
