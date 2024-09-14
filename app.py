@@ -31,7 +31,16 @@ def main_page():
   # Ensure user is logged in
   if 'name' not in session:
     return redirect(url_for('login'))
-  return render_template('index.html', transactions=transactions, user_name=session['name'])
+  labels = [
+      'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+  ]
+  data = [0, 10, 15, 8, 22, 18, 25]
+  return render_template('index.html', transactions=transactions, data=data, labels=labels, user_name=session['name'])
 
 @app.route('/submit', methods=['POST'])
 def submit_transaction():
