@@ -4,135 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Market Platform</title>
+    <!-- Link to the corrected CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Include Socket.io and Chart.js if necessary -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        form { margin-bottom: 20px; }
-        input, select { padding: 5px; margin-top: 5px; }
-        .notifications { color: red; }
-    </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
         <img src="{{ url_for('static', filename='images/blockstocks_logo.png') }}" alt="BlockStocks Logo">
+        <h1>Welcome, {{ user_name }}!</h1>
     </header>
 
-    <h1>Welcome, {{ user_name }}!</h1>
-    <div class="notifications" id="notifications"></div>
-
-    <form action="/submit" method="post">
-        <!-- Role Selection -->
-        <div class="form-section role-selection">
-            <div id="buyer-box" class="role-box">Buyer</div>
-            <div id="seller-box" class="role-box">Seller</div>
-            <input type="hidden" name="role" id="role-input">
-        </div>
-
-        <!-- Price Input -->
-        <div class="form-section">
-            <input type="number" name="price" placeholder="Price" step="0.01" min="0" max="100" required>
-        </div>
-
-        <!-- Payment Options -->
-        <div class="form-section">
-            <h3>Select Payment Methods</h3>
-            <div id="payment-options">
-                <div class="option-box" data-value="zelle">Zelle</div>
-                <div class="option-box" data-value="paypal">PayPal</div>
-                <div class="option-box" data-value="venmo">Venmo</div>
-                <div class="option-box" data-value="cashapp">CashApp</div>
+    <div class="main-container">
+        <!-- Left Column: Form -->
+        <div class="form-container">
+            <!-- Role Selection -->
+            <div class="role-selection">
+                <div id="buyer-box" class="role-box">Buyer</div>
+                <div id="seller-box" class="role-box seller-selected">Seller</div>
+                <input type="hidden" name="role" id="role-input" value="seller">
             </div>
-            <input type="text" class="other-input" name="payment" placeholder="Other payment option">
-        </div>
 
-        <!-- Contact Info -->
-        <div class="form-section">
-            <h3>Select Contact Methods</h3>
-            <div id="contact-info-options">
-                <div class="option-box" data-value="phone">Phone Number</div>
-                <div class="option-box" data-value="email">Email</div>
-                <div class="option-box" data-value="instagram">Instagram</div>
-                <div class="option-box" data-value="discord">Discord</div>
+            <!-- Price Input -->
+            <div class="price-input-wrapper">
+                <input type="number" name="price" placeholder="Price" step="0.01" min="0" max="100" required>
             </div>
-            <input type="text" class="other-input" name="contactInfo" placeholder="Other contact method">
+
+            <!-- Payment Methods -->
+            <h3>Select Payment Method(s)</h3>
+            <div class="option-box-group">
+                <div class="option-box" data-value="zelle"><span class="label-text">Zelle</span></div>
+                <div class="option-box" data-value="paypal"><span class="label-text">PayPal</span></div>
+                <div class="option-box" data-value="venmo"><span class="label-text">Venmo</span></div>
+                <div class="option-box" data-value="cashapp"><span class="label-text">CashApp</span></div>
+            </div>
+
+            <!-- Contact Methods -->
+            <h3>Enter Contact Method(s)</h3>
+            <div class="option-box-group">
+                <input type="text" class="contact-input" name="phone" placeholder="Phone #">
+                <input type="email" class="contact-input" name="email" placeholder="Email">
+                <input type="text" class="contact-input" name="instagram" placeholder="Instagram username">
+                <input type="text" class="contact-input" name="discord" placeholder="Discord handle">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
         </div>
 
-        <button type="submit">Submit</button>
-    </form>
+        <!-- Right Column: Graph -->
+        <div class="graph-container">
+            <h2>Current Projected Block Price: $8.07</h2>
+            <div class="graph">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
 
-    <h2>Transactions History</h2>
+    <h2 class="transactions-history">Transactions History</h2>
     <ul>
         {% for transaction in transactions %}
             <li>{{ transaction.name }} bought a block for ${{ transaction.price }} on {{ transaction.date.strftime('%Y-%m-%d') }}</li>
         {% endfor %}
     </ul>
 
-    <div style="height: 50vh; width: 50%;">
-        <canvas id="myChart"></canvas>
-    </div>
- 
+    <!-- JavaScript Code -->
     <script>
-        const labels = {{ labels | tojson}};
- 
+        // Chart.js graph setup
+        const labels = {{ labels | tojson }};
         const data = {
             labels: labels,
             datasets: [{
                 label: 'Sales',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: {{ data | tojson}},
+                data: {{ data | tojson }},
             }]
         };
- 
         const config = {
             type: 'line',
             data: data,
             options: { maintainAspectRatio: false }
         };
- 
-        const myChart = new Chart(
-            document.getElementById('myChart'),
-            config
-        );
- 
-    </script>
-    <script>
+        const myChart = new Chart(document.getElementById('myChart'), config);
+
         // Role selection toggling
         const buyerBox = document.getElementById('buyer-box');
         const sellerBox = document.getElementById('seller-box');
         const roleInput = document.getElementById('role-input');
 
         buyerBox.addEventListener('click', function () {
-            buyerBox.classList.toggle('buyer-selected');
+            buyerBox.classList.add('buyer-selected');
             sellerBox.classList.remove('seller-selected');
-            roleInput.value = buyerBox.classList.contains('buyer-selected') ? 'buyer' : '';
+            roleInput.value = 'buyer';
         });
 
         sellerBox.addEventListener('click', function () {
-            sellerBox.classList.toggle('seller-selected');
+            sellerBox.classList.add('seller-selected');
             buyerBox.classList.remove('buyer-selected');
-            roleInput.value = sellerBox.classList.contains('seller-selected') ? 'seller' : '';
+            roleInput.value = 'seller';
         });
 
-        // Multiple selection for payment and contact options
-        const optionBoxes = document.querySelectorAll('.option-box');
-
-        optionBoxes.forEach(box => {
-            box.addEventListener('click', () => {
-                box.classList.toggle('selected');
+        // Payment method selection
+        document.querySelectorAll('.option-box').forEach(box => {
+            box.addEventListener('click', function() {
+                this.classList.toggle('selected');
             });
-        });
-
-        // Price validation
-        document.querySelector('form').addEventListener('submit', function (event) {
-            const priceInput = document.querySelector('input[name="price"]');
-            const priceValue = parseFloat(priceInput.value);
-            if (isNaN(priceValue) || priceValue < 0 || priceValue > 100) {
-                event.preventDefault();
-                alert('Please enter a valid price between 0 and 100.');
-            }
         });
     </script>
 </body>

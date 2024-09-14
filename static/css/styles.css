@@ -4,53 +4,63 @@ body {
     padding: 20px;
     background-color: #add8e6; /* Light blue background */
     margin: 0;
-    text-align: center; /* Center align text */
+    text-align: left; /* Left-align text */
 }
 
 /* Header */
 header {
-    text-align: center;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-left: 50px;
     margin-bottom: 20px;
 }
 
 header img {
-    max-width: 200px;
+    max-width: 150px; /* Adjust logo size */
     height: auto;
+    margin-right: 20px;
 }
 
-/* Form Styling */
-form {
+h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+/* Main Layout */
+.main-container {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px 50px;
+}
+
+/* Form Container */
+.form-container {
+    width: 35%; /* Form takes up the left side */
+    padding: 20px;
     background-color: #ffffff;
-    padding: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.form-section {
-    width: 50%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
+/* Role Selection */
 .role-selection {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .role-box {
     width: 48%;
-    padding: 20px;
+    padding: 15px;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    user-select: none;
-    border: 2px solid transparent;
+    border: 1px solid black; /* Add black border to Buyer/Seller boxes */
+    font-size: 1.2rem;
 }
 
 .role-box.buyer-selected {
@@ -64,61 +74,82 @@ form {
 }
 
 /* Price Input Styling */
+.price-input-wrapper {
+    margin-bottom: 20px;
+}
+
 input[type="number"] {
-    width: 100%;
-    padding: 20px;
-    font-size: 24px;
+    width: 95%; /* Adjust the size of the price input */
+    padding: 15px;
+    font-size: 20px;
     text-align: center;
     border-radius: 5px;
     border: 1px solid #ddd;
 }
 
-input[type="number"]:invalid {
-    border-color: red;
+/* Payment and Contact Info Selection */
+.option-box-group {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-gap: 4%;
+    margin-bottom: 20px;
 }
 
-/* Payment and Contact Info Selection */
+/* Payment Method Boxes */
 .option-box {
-    display: inline-block;
-    width: 23%;
     padding: 15px;
-    margin: 1%;
     border: 1px solid #ddd;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    background-color: white;
 }
 
 .option-box.selected {
     background-color: lightyellow;
 }
 
-/* "Other" options */
-.other-input {
+/* Contact Method Input Fields */
+.contact-input {
+    padding: 15px;
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: white;
+    text-align: center;
 }
 
-/* Notifications */
-.notifications {
-    color: red;
-    font-weight: bold;
+/* Submit Button Styling */
+button[type="submit"] {
+    width: 50%;
+    padding: 15px;
+    font-size: 16px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: auto;
+}
+
+/* Right Column for the graph */
+.graph-container {
+    width: 60%; /* Graph takes up the right side */
+    text-align: center;
+    margin-top: -50px; /* Move the graph upwards */
+}
+
+.graph-container h2 {
+    font-size: 2rem;
     margin-bottom: 20px;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li {
-    background-color: #ffffff;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Align Transaction History text */
+.transactions-history {
+    width: 88%;
+    text-align: right;
+    margin-top: -400px;
 }
