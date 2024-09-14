@@ -39,17 +39,79 @@
         <button type="submit">Submit</button>
     </form>
 
-    <h2>Pending Transactions</H2>
-      <div id="transaction_notification">
-        <span id="notification-message"></span>
-    </div>
+    <h2>Current Offers</h2>
+    {% if current_offer %}
+        <p>current_offer: {{ current_offer }}</p>
+    {% else %}
+        <p>No Offer Made</p>
+    {% endif %}
+    <button id="cancel-offer">Cancel Offer</button>
+
+   {% if pending_transaction is not none %}
+     <div id="accept-notif">
+       <span> {{ pending_transaction.name }} ({{ pending_transaction.id }}) has accepted your offer.</span>
+        <button id="accept-notif-proceed">Press to Proceed</button>
+     </div>
+    {% endif %}
+
+    <script>
+      document.getElementById("cancel-offer").addEventListener("click", function() {
+          fetch('/cancel-offer', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      document.getElementById("accept-notif-proceed").addEventListener("click", function() {
+          fetch('/accept-notif-proceed', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    </script>
 
     <h2>Current Prices</h2>
-    <p>min seller price: ${{ min_seller.mine_price }}</p>
+    <p>min seller price: ${{ min_seller.min_price }}</p>
     <p>max buyer price: ${{ max_buyer.max_price }}</p>
 
-    <button type="buy_min">Buy Min</button>
-    <button type="sell_max">Sell Max</button>
+    <button id="buy_min">Buy Min</button>
+    <button id="sell_max">Sell Max</button>
+
+    <script>
+      document.getElementById("buy_min").addEventListener("click", function() {
+          fetch('/buy-min', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      document.getElementById("sell_max").addEventListener("click", function() {
+          fetch('/sell-max', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    </script>
 
     <h2>Transaction History</h2>
     <ul>

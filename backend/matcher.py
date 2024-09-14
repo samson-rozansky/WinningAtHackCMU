@@ -1,4 +1,9 @@
+from datetime import datetime
 from typing import Optional
+
+def get_time():
+  return datetime.now()
+
 
 class AbstractTransaction:
   def __init__(self, name: str, id: str, payment: str,
@@ -7,6 +12,17 @@ class AbstractTransaction:
     self.id = id
     self.payment = payment
     self.time = time
+
+  def to_str(self):
+    return f"[{self.time}]: {self.payment}"
+  
+  def get_info(self):
+    return {
+      "name": self.name,
+      "id": self.id,
+      "payment": self.payment,
+      "time": self.time,
+    }
 
 class Buyer(AbstractTransaction):
   def __init__(self, name: str, id: str, payment: str, 
@@ -52,7 +68,20 @@ class Matcher:
 
   def add_seller(self, seller: Seller):
     self._queued_sellers.append(seller)
-    self._log.append(f"[{buyer.time}]: {seller.name} ({seller.id}) is selling for ${seller.min_price}")
+    self._log.append(f"[{seller.time}]: {seller.name} ({seller.id}) is selling for ${seller.min_price}")
+
+  def remove_buyer(self, buyer: Buyer):
+    self._queued_buyers.remove(buyer)
+    self._log.append(f"[{get_time()}]: {buyer.name} ({buyer.id}) cancelled offer.")
+
+  def remove_seller(self, seller: Seller):
+    self._queued_sellers.remove(seller)
+    self._log.append(f"[{get_time()}]: {seller.name} ({seller.id}) cancelled offer.")
 
   def log(self):
     return self._log
+  
+  def process_transaction(self, buyer: Buyer, seller: Seller, price: float):
+    self._queued_buyers.remove(buyer)
+    self._queued_sellers.remove(seller)
+    self._log.append(f"[{get_time()}]: {seller.name} ({seller.id}) sold a block to {buyer.name} ({buyer.id}) for ${price}.")
