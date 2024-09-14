@@ -26,7 +26,6 @@ def handle_login():
   session['id'] = id
   session['name'] = request.form['name']
   current_offers[id] = None 
-  pending_transactions[id] = None
   return redirect(url_for('main_page'))
 
 @app.route('/get_stock_data')
@@ -41,13 +40,20 @@ def main_page():
     return redirect(url_for('login'))
   id = session["id"]
   current_offer=None if current_offers.get(id) is None else current_offers[id].to_str()
-  cur_tran=None if tran_pending.get(id) is None else pending_transactions[id].get_info()
   # print("min=", matcher.get_min_seller().min_price)
   # print("max=", matcher.get_max_buyer().max_price)
+  tran_pending_id = tran_pending.get(id)
+  if tran_pending_id is not None:
+    cur_tran = {
+      "id": tran_pending_id.id,
+      "name": tran_pending_id.name,
+    }
+  else:
+    cur_tran = None
   return render_template('index.html', 
                          log=matcher.log(),
                          current_offer=current_offer,
-                         tran_pending=tran_pending,
+                         tran_pending=cur_tran,
                          min_seller=matcher.get_min_seller(),
                          max_buyer=matcher.get_max_buyer(),
                          user_name=session['name'])
