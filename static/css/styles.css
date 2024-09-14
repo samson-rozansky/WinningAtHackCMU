@@ -2,9 +2,10 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #add8e6; /* Light blue background */
+    background-color: #424549; /* Light grey background */
     margin: 0;
-    text-align: left; /* Left-align text */
+    color: white; /* Set all text to white */
+    text-align: left;
 }
 
 /* Header */
@@ -22,9 +23,14 @@ header img {
     margin-right: 20px;
 }
 
-h1 {
+h1, h2 {
     margin: 0;
     font-size: 2rem;
+}
+
+/* Apply Roboto Slab font to specific elements */
+.roboto-slab {
+    font-family: 'Roboto Slab', serif;
 }
 
 /* Main Layout */
@@ -38,9 +44,9 @@ h1 {
 .form-container {
     width: 35%; /* Form takes up the left side */
     padding: 20px;
-    background-color: #ffffff;
+    background-color: #36393e; /* Slightly darker grey */
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px white; /* Glowing white border */
     display: flex;
     flex-direction: column;
 }
@@ -59,18 +65,19 @@ h1 {
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    border: 1px solid black; /* Add black border to Buyer/Seller boxes */
+    border: 1px solid white; /* White border */
     font-size: 1.2rem;
+    color: white;
 }
 
 .role-box.buyer-selected {
-    background-color: lightgreen;
-    border-color: green;
+    background-color: #36a64f; /* Green for buyer */
+    border-color: #36a64f;
 }
 
 .role-box.seller-selected {
-    background-color: lightcoral;
-    border-color: red;
+    background-color: #d64545; /* Red for seller */
+    border-color: #d64545;
 }
 
 /* Price Input Styling */
@@ -84,7 +91,9 @@ input[type="number"] {
     font-size: 20px;
     text-align: center;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    background-color: #282b30; /* Darker grey for text input */
+    border: 1px solid white; /* White border for inputs */
+    color: white;
 }
 
 /* Payment and Contact Info Selection */
@@ -98,28 +107,29 @@ input[type="number"] {
 /* Payment Method Boxes */
 .option-box {
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid white; /* White border */
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    background-color: white;
+    background-color: #282b30; /* Darker grey for text boxes */
+    color: white;
 }
 
 .option-box.selected {
-    background-color: lightyellow;
+    background-color: #666; /* Highlighted color when selected */
 }
 
 /* Contact Method Input Fields */
 .contact-input {
     padding: 15px;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid white; /* White border */
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 1rem;
-    background-color: white;
-    text-align: center;
+    background-color: #282b30; /* Darker grey for inputs */
+    color: white;
 }
 
 /* Submit Button Styling */
@@ -127,7 +137,7 @@ button[type="submit"] {
     width: 50%;
     padding: 15px;
     font-size: 16px;
-    background-color: green;
+    background-color: #36a64f; /* Green for button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -135,21 +145,60 @@ button[type="submit"] {
     margin: auto;
 }
 
-/* Right Column for the graph */
+/* Graph Container - Right half of the screen */
 .graph-container {
-    width: 60%; /* Graph takes up the right side */
+    width: 60%; /* Adjust width to take up more space */
+    margin: auto;
+    margin-top: -100px;
     text-align: center;
-    margin-top: -50px; /* Move the graph upwards */
 }
 
+/* Center the text inside the graph container */
 .graph-container h2 {
     font-size: 2rem;
     margin-bottom: 20px;
+    text-align: center;
+    display: block;
+    width: 100%;
 }
 
-/* Align Transaction History text */
-.transactions-history {
-    width: 88%;
-    text-align: right;
-    margin-top: -400px;
+/* Info Container for Prices, Offers, and Transaction History */
+.info-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -300px;
+    width: 60%; /* Shift the info container to the right */
+    margin-left: auto; /* Align the info container to the right side */
+}
+
+/* Info Box Styling */
+.info-box {
+    background-color: #36393e; /* Slightly darker grey */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px white; /* Glowing white border */
+    width: 25%; /* Make each info box take 25% of the available width */
+    text-align: center;
+    color: white;
+}
+
+/* Transaction History box with larger width */
+.info-box.larger {
+    width: 45%; /* Give Transaction History more space */
+}
+
+/* Buttons for Offers and Prices */
+button {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
