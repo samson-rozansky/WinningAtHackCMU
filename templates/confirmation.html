@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        /* Style for making input boxes vertically taller */
+        input[type="text"] {
+            height: 40px; /* Increase the height to make the textboxes taller */
+            padding: 10px; /* Optional: Increase padding for better spacing */
+            font-size: 16px; /* Optional: Increase font size for better readability */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/blockstocks_logo.png') }}" alt="BlockStocks Logo">
+    </header>
+
+    <h1>Welcome to the Block Market!</h1>
+    <h2>Please enter your name and ID to continue:</h2>
+
+    <form action="/login" method="POST">
+        <input type="text" name="name" placeholder="Name (First + Last)" required>
+        <input type="text" name="id" placeholder="Andrew ID" required>
+        <button type="submit">Continue</button>
+    </form>
+</body>
+</html>
