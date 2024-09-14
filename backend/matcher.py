@@ -2,7 +2,7 @@ from typing import Optional
 
 class AbstractTransaction:
   def __init__(self, name: str, id: str, payment: str,
-               time: float):
+               time: str):
     self.name = name
     self.id = id
     self.payment = payment
@@ -10,14 +10,14 @@ class AbstractTransaction:
 
 class Buyer(AbstractTransaction):
   def __init__(self, name: str, id: str, payment: str, 
-               time: float, max_price: float):
+               time: str, max_price: float):
     super().__init__(name, id, payment, time)
     self.max_price = max_price
 
 
 class Seller(AbstractTransaction):
   def __init__(self, name: str, id: str, payment: str, 
-               time: float, min_price: float):
+               time: str, min_price: float):
     super().__init__(name, id, payment, time)
     self.min_price = min_price
 
@@ -48,11 +48,11 @@ class Matcher:
   
   def add_buyer(self, buyer: Buyer):
     self._queued_buyers.append(buyer)
-    self._log.append(f"{buyer.name} ({buyer.id}) placed an order for a block for at most {buyer.max_price}")
+    self._log.append(f"[{buyer.time}]: {buyer.name} ({buyer.id}) is buying for ${buyer.max_price}")
 
   def add_seller(self, seller: Seller):
     self._queued_sellers.append(seller)
-    self._log.append(f"{seller.name} ({seller.id}) is selling a block for at least {seller.min_price}")
+    self._log.append(f"[{buyer.time}]: {seller.name} ({seller.id}) is selling for ${seller.min_price}")
 
   def log(self):
     return self._log

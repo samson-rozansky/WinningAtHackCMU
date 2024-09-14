@@ -39,9 +39,23 @@
         <button type="submit">Submit</button>
     </form>
 
-    <h2>Transactions History</h2>
+    <h2>Pending Transactions</H2>
+      <div id="transaction_notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <h2>Current Prices</h2>
+    <p>min seller price: ${{ min_seller.mine_price }}</p>
+    <p>max buyer price: ${{ max_buyer.max_price }}</p>
+
+    <button type="buy_min">Buy Min</button>
+    <button type="sell_max">Sell Max</button>
+
+    <h2>Transaction History</h2>
     <ul>
-      {{ log }}
+      {% for entry in log %}
+          <li>{{ entry }}</li>
+      {% endfor %}
     </ul>
 
     <!--<script>-->

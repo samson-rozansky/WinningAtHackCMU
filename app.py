@@ -33,7 +33,9 @@ def main_page():
   if 'name' not in session:
     return redirect(url_for('login'))
   return render_template('index.html', 
-                         log="\n".join(matcher.log()), 
+                         log=matcher.log(),
+                         min_seller=matcher.get_min_seller(),
+                         max_buyer=matcher.get_max_buyer(),
                          user_name=session['name'])
 
 @app.route('/submit', methods=['POST'])
@@ -49,13 +51,15 @@ def submit_transaction():
   price = request.form['price']
   payment = request.form['payment']
   contact_info = request.form['contactInfo']
+
+  time = datetime.now()
   
   if role == "buyer": 
     transaction = Buyer(
       name=name,
       id=id,
       payment=payment,
-      time=0., # placeholder
+      time=time,
       max_price = float(price),
     )
     matcher.add_buyer(transaction)
@@ -64,7 +68,7 @@ def submit_transaction():
       name=name,
       id=id,
       payment=payment,
-      time=0., # placeholder
+      time=time,
       min_price = float(price),
     )
     matcher.add_seller(transaction)
@@ -72,6 +76,16 @@ def submit_transaction():
     raise RuntimeError("Unrecognized Role")
 
   return redirect(url_for('main_page'))
+
+@app.route("/buy_min", methods=["POST"])
+def buy_min():
+
+  return redirect(url_for("main_page"))
+
+
+@app.route("/sell_max", methods=["POST"])
+def sell_max():
+  pass
 
 if __name__ == '__main__':
   socketio.run(app, host='0.0.0.0', port=8080, debug=True)
