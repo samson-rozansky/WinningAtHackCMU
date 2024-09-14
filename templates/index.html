@@ -68,26 +68,23 @@
             <li>{{ transaction.name }} bought a block for ${{ transaction.price }} on {{ transaction.date.strftime('%Y-%m-%d') }}</li>
         {% endfor %}
     </ul>
+    <h2>Current Offers</h2>
+    {% if current_offer %}
+        <p>current_offer: {{ current_offer }}</p>
+    {% else %}
+        <p>No Offer Made</p>
+    {% endif %}
+    <button id="cancel-offer">Cancel Offer</button>
+
+   {% if pending_transaction is not none %}
+     <div id="accept-notif">
+       <span> {{ pending_transaction.name }} ({{ pending_transaction.id }}) has accepted your offer.</span>
+        <button id="accept-notif-proceed">Press to Proceed</button>
+     </div>
+    {% endif %}
 
     <!-- JavaScript Code -->
     <script>
-        // Chart.js graph setup
-        const labels = {{ labels | tojson }};
-        const data = {
-            labels: labels,
-            datasets: [{
-                label: 'Sales',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: {{ data | tojson }},
-            }]
-        };
-        const config = {
-            type: 'line',
-            data: data,
-            options: { maintainAspectRatio: false }
-        };
-        const myChart = new Chart(document.getElementById('myChart'), config);
 
         // Role selection toggling
         const buyerBox = document.getElementById('buyer-box');
@@ -112,6 +109,89 @@
                 this.classList.toggle('selected');
             });
         });
+      document.getElementById("cancel-offer").addEventListener("click", function() {
+          fetch('/cancel-offer', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      document.getElementById("accept-notif-proceed").addEventListener("click", function() {
+          fetch('/accept-notif-proceed', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
     </script>
+
+    <h2>Current Prices</h2>
+    <p>min seller price: ${{ min_seller.min_price }}</p>
+    <p>max buyer price: ${{ max_buyer.max_price }}</p>
+
+    <button id="buy_min">Buy Min</button>
+    <button id="sell_max">Sell Max</button>
+
+    <script>
+      document.getElementById("buy_min").addEventListener("click", function() {
+          fetch('/buy-min', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+
+      document.getElementById("sell_max").addEventListener("click", function() {
+          fetch('/sell-max', {
+              method: 'POST'
+          })
+          .then(response => {
+          if (response.redirected) {
+              window.location.href = response.url;  // Follow the redirect in JavaScript
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    </script>
+
+    <h2>Transaction History</h2>
+    <ul>
+      {% for entry in log %}
+          <li>{{ entry }}</li>
+      {% endfor %}
+    </ul>
+
+    <!--<script>-->
+    <!--    const socket = io();-->
+    <!---->
+    <!--    socket.on('notifyTransactionPlaced', (data) => {-->
+    <!--      const transaction = data;-->
+    <!--      document.getElementById("lo")-->
+    <!--    })-->
+    <!---->
+    <!--    // Listen for real-time notifications-->
+    <!--    socket.on('notifySeller', (data) => {-->
+    <!--        const { buyer, seller } = data;-->
+    <!--        document.getElementById('notifications').innerText = `Seller ${seller.name}, you have a buyer (${buyer.name}) offering $${buyer.price}. You have 5 minutes to respond.`;-->
+    <!--    });-->
+    <!---->
+    <!--    socket.on('notifyBuyer', (data) => {-->
+    <!--        const { buyer, seller } = data;-->
+    <!--        document.getElementById('notifications').innerText = `Buyer ${buyer.name}, seller (${seller.name}) is offering at $${seller.price}.`;-->
+    <!--    });-->
+    <!--</script>-->
 </body>
 </html>
