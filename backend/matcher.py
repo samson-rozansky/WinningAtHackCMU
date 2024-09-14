@@ -26,14 +26,14 @@ class AbstractTransaction:
 
 class Buyer(AbstractTransaction):
   def __init__(self, name: str, id: str, payment: str, 
-               time: str, max_price: float):
+               time: str, max_price: float, contactInfo: dict):
     super().__init__(name, id, payment, time)
     self.max_price = max_price
 
 
 class Seller(AbstractTransaction):
   def __init__(self, name: str, id: str, payment: str, 
-               time: str, min_price: float):
+               time: str, min_price: float, contactInfo: dict):
     super().__init__(name, id, payment, time)
     self.min_price = min_price
 

@@ -91,8 +91,12 @@ def submit_transaction():
       payment=payment,
       time=time,
       max_price = float(price),
+      contactInfo = contact_info
     )
-    matcher.add_buyer(transaction)
+    if matcher.get_min_seller() != None and float(price)>=matcher.get_min_seller().min_price:
+        finishTransaction(transaction, matcher.get_min_seller());
+    else:
+        matcher.add_buyer(transaction)
   elif role == "seller":
     transaction = Seller(
       name=name,
@@ -100,13 +104,19 @@ def submit_transaction():
       payment=payment,
       time=time,
       min_price = float(price),
+      contactInfo = contact_info
     )
-    matcher.add_seller(transaction)
+    if matcher.get_max_buyer()!=None and float(price)<=matcher.get_max_buyer().max_price:
+        finishTransaction(matcher.get_max_buyer(), transaction);
+    else:
+        matcher.add_seller(transaction)
   else:
     raise RuntimeError("Unrecognized Role")
 
   current_offers[id] = transaction
   return redirect(url_for('main_page'))
+def finishTransaction(buyer, seller):
+    print(buyer, seller);
 
 @app.route("/cancel-offer", methods=["POST"])
 def cancel_offer():
