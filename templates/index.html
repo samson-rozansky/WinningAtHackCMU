@@ -4,38 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Market Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        form { margin-bottom: 20px; }
-        input, select { padding: 5px; margin-top: 5px; }
-        .notifications { color: red; }
-    </style>
 </head>
 <body>
+    <header>
+        <img src="{{ url_for('static', filename='images/blockstocks_logo.png') }}" alt="BlockStocks Logo">
+    </header>
+
     <h1>Welcome, {{ user_name }}!</h1>
     <div class="notifications" id="notifications"></div>
 
-    <h2>Submit as Buyer or Seller</h2>
     <form action="/submit" method="post">
-        <select name="role" required>
-            <option value="">Select Role</option>
-            <option value="buyer">Buyer</option>
-            <option value="seller">Seller</option>
-        </select>
+        <!-- Role Selection -->
+        <div class="form-section role-selection">
+            <div id="buyer-box" class="role-box">Buyer</div>
+            <div id="seller-box" class="role-box">Seller</div>
+            <input type="hidden" name="role" id="role-input">
+        </div>
 
-        <input type="number" name="price" placeholder="Price" required>
+        <!-- Price Input -->
+        <div class="form-section">
+            <input type="number" name="price" placeholder="Price" step="0.01" min="0" max="100" required>
+        </div>
 
-        <select name="payment" required>
-            <option value="">Select Payment</option>
-            <option value="zelle">Zelle</option>
-            <option value="paypal">PayPal</option>
-            <option value="venmo">Venmo</option>
-            <option value="cashapp">CashApp</option>
-            <option value="other">Other</option>
-        </select>
+        <!-- Payment Options -->
+        <div class="form-section">
+            <h3>Select Payment Methods</h3>
+            <div id="payment-options">
+                <div class="option-box" data-value="zelle">Zelle</div>
+                <div class="option-box" data-value="paypal">PayPal</div>
+                <div class="option-box" data-value="venmo">Venmo</div>
+                <div class="option-box" data-value="cashapp">CashApp</div>
+            </div>
+            <input type="text" class="other-input" name="payment" placeholder="Other payment option">
+        </div>
 
-        <input type="text" name="contactInfo" placeholder="Contact Info (Email, Phone)" required>
+        <!-- Contact Info -->
+        <div class="form-section">
+            <h3>Select Contact Methods</h3>
+            <div id="contact-info-options">
+                <div class="option-box" data-value="phone">Phone Number</div>
+                <div class="option-box" data-value="email">Email</div>
+                <div class="option-box" data-value="instagram">Instagram</div>
+                <div class="option-box" data-value="discord">Discord</div>
+            </div>
+            <input type="text" class="other-input" name="contactInfo" placeholder="Other contact method">
+        </div>
+
         <button type="submit">Submit</button>
     </form>
 
@@ -47,17 +63,40 @@
     </ul>
 
     <script>
-        const socket = io();
+        // Role selection toggling
+        const buyerBox = document.getElementById('buyer-box');
+        const sellerBox = document.getElementById('seller-box');
+        const roleInput = document.getElementById('role-input');
 
-        // Listen for real-time notifications
-        socket.on('notifySeller', (data) => {
-            const { buyer, seller } = data;
-            document.getElementById('notifications').innerText = `Seller ${seller.name}, you have a buyer (${buyer.name}) offering $${buyer.price}. You have 5 minutes to respond.`;
+        buyerBox.addEventListener('click', function () {
+            buyerBox.classList.toggle('buyer-selected');
+            sellerBox.classList.remove('seller-selected');
+            roleInput.value = buyerBox.classList.contains('buyer-selected') ? 'buyer' : '';
         });
 
-        socket.on('notifyBuyer', (data) => {
-            const { buyer, seller } = data;
-            document.getElementById('notifications').innerText = `Buyer ${buyer.name}, seller (${seller.name}) is offering at $${seller.price}.`;
+        sellerBox.addEventListener('click', function () {
+            sellerBox.classList.toggle('seller-selected');
+            buyerBox.classList.remove('buyer-selected');
+            roleInput.value = sellerBox.classList.contains('seller-selected') ? 'seller' : '';
+        });
+
+        // Multiple selection for payment and contact options
+        const optionBoxes = document.querySelectorAll('.option-box');
+
+        optionBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                box.classList.toggle('selected');
+            });
+        });
+
+        // Price validation
+        document.querySelector('form').addEventListener('submit', function (event) {
+            const priceInput = document.querySelector('input[name="price"]');
+            const priceValue = parseFloat(priceInput.value);
+            if (isNaN(priceValue) || priceValue < 0 || priceValue > 100) {
+                event.preventDefault();
+                alert('Please enter a valid price between 0 and 100.');
+            }
         });
     </script>
 </body>
