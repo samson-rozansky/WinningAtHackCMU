@@ -69,12 +69,18 @@ def submit_transaction():
   print("SDFSDFSD")
 
   # Get form data
+  info = request.json;
+  print(info);
+  # print(info['role'])
+  # print(request.values)
+  # print(request.values[0])
+  # print(request.values[1])
   name = session['name']
   id = session['id']
-  role = request.form['role']
-  price = request.form['price']
-  payment = request.form['payment']
-  contact_info = request.form['contactInfo']
+  role = info['role']
+  price = info['price']
+  payment = info['paymentMethods']
+  contact_info = info['contact']
 
   time = datetime.now()
   

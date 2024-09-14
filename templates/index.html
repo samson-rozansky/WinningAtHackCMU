@@ -41,7 +41,7 @@
 
             <!-- Price Input -->
             <div class="price-input-wrapper">
-                <input type="number" name="price" placeholder="Price" step="0.01" min="0" max="100" required>
+                <input id = "price" type="number" name="price" placeholder="Price" step="0.01" min="0" max="100" required>
             </div>
 
             <!-- Payment Methods -->
@@ -56,16 +56,62 @@
             <!-- Contact Methods -->
             <h3>Enter Contact Method(s)</h3>
             <div class="option-box-group">
-                <input type="text" class="contact-input" name="phone" placeholder="Phone #">
-                <input type="email" class="contact-input" name="email" placeholder="Email">
-                <input type="text" class="contact-input" name="instagram" placeholder="Instagram username">
-                <input type="text" class="contact-input" name="discord" placeholder="Discord handle">
+                <input id = "phone-input" type="text" class="contact-input" name="phone" placeholder="Phone #">
+                <input id = "email-input" type="email" class="contact-input" name="email" placeholder="Email">
+                <input id = "instagram-input" type="text" class="contact-input" name="instagram" placeholder="Instagram username">
+                <input id = "discord-input" type="text" class="contact-input" name="discord" placeholder="Discord handle">
             </div>
 
             <!-- Submit Button -->
-            <button type="submit">Submit</button>
+            <button type="button" id="form-submission">Submit</button>
         </div>
+<script>
+    document.getElementById("form-submission").addEventListener("click", function() {
+        // Collect form data
+        const role = document.getElementById("role-input").value;
+        const price = document.getElementById("price").value;
+        const paymentMethods = Array.from(document.querySelectorAll('.option-box.selected')).map(el => el.getAttribute('data-value'));
+        const phone = document.getElementById("phone-input").value;
+        const email = document.getElementById("email-input").value;
+        const instagram = document.getElementById("instagram-input").value;
+        const discord = document.getElementById("discord-input").value;
 
+        // Create data object
+        const data = {
+            role: role,
+            price: price,
+            paymentMethods: paymentMethods,
+            contact: {
+                phone: phone,
+                email: email,
+                instagram: instagram,
+                discord: discord
+            }
+        };
+
+        // Send data to server
+        fetch('/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;  // Handle redirect
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Toggle selected class for payment methods
+    <!--document.querySelectorAll('.option-box').forEach(box => {-->
+    <!--    box.addEventListener('click', function() {-->
+    <!--        this.classList.toggle('selected');-->
+    <!--    });-->
+    <!--});-->
+</script>
         <!-- Right Column: Graph -->
         <div class="graph-container">
             <h2 class="roboto-slab">Current Projected Block Price: $8.07</h2>
@@ -115,8 +161,8 @@ var layout = {
         tickfont: { color: 'white' },  // Y-axis tick color
         gridcolor: 'white'  // Gridline color
             },
-            paper_bgcolor: '#A9A9A9',  // Background outside plotting area
-            plot_bgcolor: '#424549',  // Background inside plotting area
+            paper_bgcolor: '#424549',  // Background outside plotting area
+            plot_bgcolor: '#36393E',  // Background inside plotting area
         };
 
                 Plotly.newPlot('chart', [trace], layout);
