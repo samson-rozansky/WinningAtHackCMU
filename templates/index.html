@@ -114,7 +114,7 @@
 </script>
         <!-- Right Column: Graph -->
         <div class="graph-container">
-            <h2 class="roboto-slab">Current Projected Block Price: $8.07</h2>
+            <h2 class="roboto-slab">Current Projected Block Price: <span id="block-price">$8.07</span></h2>
             <div style="width: 107%;">
                 <div id="chart"></div>
             </div>
@@ -174,8 +174,8 @@ var layout = {
         <!-- Current Prices -->
         <div class="info-box">
             <h2>Current Prices</h2>
-            <p>min seller price: ${{ min_seller.min_price }}</p>
-            <p>max buyer price: ${{ max_buyer.max_price }}</p>
+            <p>Min. Seller Price: ${{ min_seller.min_price }}</p>
+            <p>Max. Buyer Price: ${{ max_buyer.max_price }}</p>
             <button id="buy_min">Buy Min</button>
             <button id="sell_max">Sell Max</button>
         </div>
@@ -184,12 +184,13 @@ var layout = {
         <!-- Current Offers -->
         <div class="info-box">
             <h2>Current Offers</h2>
-            {% if current_offer %}
-                <p>current_offer: {{ current_offer }}</p>
+           {% if current_offer %}
+                <p>{{ current_offer }}</p>
+                <button id="cancel-offer">Cancel Offer</button>
             {% else %}
                 <p>No Offer Made</p>
+                <button id="cancel-offer" class="disabled" disabled>Cancel Offer</button>
             {% endif %}
-            <button id="cancel-offer">Cancel Offer</button>
 
             {% if pending_transaction is not none %}
             <div id="accept-notif">
@@ -202,8 +203,8 @@ var layout = {
         <!-- Transaction History -->
         <div class="info-box larger">
             <h2>Transaction History</h2>
-            <ul>
-              {% for entry in log %}
+            <ul class="no-bullets">
+              {% for entry in log[-7:] %}
                   <li>{{ entry }}</li>
               {% endfor %}
             </ul>
@@ -261,5 +262,35 @@ var layout = {
         .catch(error => console.error('Error:', error));
       });
     </script>
+
+<script>
+    // Function to calculate the projected block price based on the time of day
+    function calculateBlockPrice() {
+      const now = new Date(); // Get current date and time
+      const hours = now.getHours(); // Get current hour (0-23)
+      const minutes = now.getMinutes(); // Get current minutes (0-59)
+      const seconds = now.getSeconds();
+  
+      // Example logic for price calculation based on time (you can modify this)
+      let basePrice = 8.50;
+      let fluctuation = Math.sin(Math.PI*(((60*hours+minutes)%240 - 120)/120)); // Adjust by hours and minutes
+  
+      let projectedPrice = (basePrice + fluctuation).toFixed(2); // Round to 2 decimal places
+      return projectedPrice;
+    }
+  
+    // Function to update the block price in the HTML
+    function updateBlockPrice() {
+      const priceElement = document.getElementById('block-price');
+      const calculatedPrice = calculateBlockPrice();
+      priceElement.innerText = `$${calculatedPrice}`;
+    }
+  
+    // Update the price when the page loads
+    window.onload = updateBlockPrice;
+  
+    // Optional: Continuously update the price every minute (or set your preferred interval)
+    setInterval(updateBlockPrice, 1000); // Update every 60 seconds
+  </script>
 </body>
 </html>

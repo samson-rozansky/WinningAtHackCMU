@@ -96,7 +96,7 @@ def submit_transaction():
   payment = info['paymentMethods']
   contact_info = info['contact']
 
-  time = datetime.now()
+  time = datetime.now().strftime("%-m/%-d %H:%M")
   
   if role == "buyer": 
     transaction = Buyer(
@@ -104,8 +104,8 @@ def submit_transaction():
       id=id,
       payment=payment,
       time=time,
-      max_price = float(price),
-      contactInfo = contact_info
+      contactInfo = contact_info,
+      max_price = round(float(price),2),
     )
     matcher.add_buyer(transaction)
     if matcher.get_min_seller() != None and float(price)>=matcher.get_min_seller().min_price:
@@ -117,7 +117,7 @@ def submit_transaction():
       id=id,
       payment=payment,
       time=time,
-      min_price = float(price),
+      min_price = round(float(price),2),
       contactInfo = contact_info
     )
     matcher.add_seller(transaction)
