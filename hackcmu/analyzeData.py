@@ -10,7 +10,8 @@ def get_block_seller_amount(message) -> Optional[int]:
       return None
     numbers = [float(x) for x in numbers]
     closest = min(numbers, key=lambda x: abs(x - 8.0))
-    return closest
+    if abs(closest-8.0)<6.0:
+        return closest
   return None
 with open("test.txt") as f: 
     for _ in range(100):
