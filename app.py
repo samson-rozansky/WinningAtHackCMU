@@ -11,7 +11,8 @@ from backend.matcher import Buyer, Seller, Matcher
 
 matcher = Matcher()
 current_offers = {}
-pending_transactions = {}
+tran_pending = {}
+tran_ac = {}
 
 @app.route('/')
 def login():
@@ -40,13 +41,13 @@ def main_page():
     return redirect(url_for('login'))
   id = session["id"]
   current_offer=None if current_offers.get(id) is None else current_offers[id].to_str()
-  pending_transaction=None if pending_transactions.get(id) is None else pending_transactions[id].get_info()
+  cur_tran=None if tran_pending.get(id) is None else pending_transactions[id].get_info()
   # print("min=", matcher.get_min_seller().min_price)
   # print("max=", matcher.get_max_buyer().max_price)
   return render_template('index.html', 
                          log=matcher.log(),
                          current_offer=current_offer,
-                         pending_transaction=pending_transaction,
+                         tran_pending=tran_pending,
                          min_seller=matcher.get_min_seller(),
                          max_buyer=matcher.get_max_buyer(),
                          user_name=session['name'])
@@ -66,7 +67,6 @@ def submit_transaction():
   # Ensure user is logged in
   if 'name' not in session:
     return redirect(url_for('login'))
-  print("SDFSDFSD")
 
   # Get form data
   info = request.json;
@@ -82,7 +82,7 @@ def submit_transaction():
   payment = info['paymentMethods']
   contact_info = info['contact']
 
-  time = datetime.now()
+  time = datetime.now().replace(microsecond=0)
   
   if role == "buyer": 
     transaction = Buyer(
@@ -120,38 +120,50 @@ def cancel_offer():
   current_offers[id] = None
   return redirect(url_for("main_page"))
 
-@app.route("/accept-notif-proceed", methods=["POST"])
-def accept_notif_proceed():
+@app.route("/accept-proceed", methods=["POST"])
+def accept_proceed():
   id = session["id"]
-  print("accept notif proceed")
-  assert current_offers[id] is not None
-  seller = current_offers[id]
-  print(seller.id, pending_transactions[seller.id].id)
-  matcher.process_transaction(pending_transactions[seller.id], seller, 80085) # replace me
-  pending_transactions[seller] = None
-  current_offers[id] = None
-  return redirect(url_for("main_page"))
+  print("accept proceed")
+  tran_ac[id] = tran_pending[id]
+  tran_ac[tran_pending[id]] = tran_pending[tran_pending[id].id]
+  return redirect(url_for("finish"))
 
-@app.route("/buy-min", methods=["POST"])
-def buy_min():
-  id = session["id"]
-  name = session["name"]
-  temp = Buyer(name, id, "", "", "")
-  current_offers[id] = temp
-  pending_transactions[matcher.get_min_seller().id] = temp
-  print("buy min")
-  return redirect(url_for("main_page"))
+def finishTransaction(buyer: Buyer, seller: Seller):
+  tran_pending[buyer.id] = seller
+  tran_pending[seller.id] = buyer
 
+# @app.route("/accept-notif-proceed", methods=["POST"])
+# def accept_notif_proceed():
+#   id = session["id"]
+#   print("accept notif proceed")
+#   assert current_offers[id] is not None
+#   seller = current_offers[id]
+#   print(seller.id, pending_transactions[seller.id].id)
+#   matcher.process_transaction(pending_transactions[seller.id], seller, 80085) # replace me
+#   pending_transactions[seller] = None
+#   current_offers[id] = None
+#   return redirect(url_for("main_page"))
 
-@app.route("/sell-max", methods=["POST"])
-def sell_max():
-  id = session["id"]
-  name = session["name"]
-  temp = Seller(name, id, "", "", "")
-  pending_transactions[id] = matcher.get_max_buyer()
-  current_offers[id] = temp
-  print("sell max")
-  return redirect(url_for("main_page"))
+# @app.route("/buy-min", methods=["POST"])
+# def buy_min():
+#   id = session["id"]
+#   name = session["name"]
+#   temp = Buyer(name, id, "", "", "")
+#   current_offers[id] = temp
+#   pending_transactions[matcher.get_min_seller().id] = temp
+#   print("buy min")
+#   return redirect(url_for("main_page"))
+#
+#
+# @app.route("/sell-max", methods=["POST"])
+# def sell_max():
+#   id = session["id"]
+#   name = session["name"]
+#   temp = Seller(name, id, "", "", "")
+#   pending_transactions[id] = matcher.get_max_buyer()
+#   current_offers[id] = temp
+#   print("sell max")
+#   return redirect(url_for("main_page"))
 
 if __name__ == '__main__':
   socketio.run(app, debug=True)

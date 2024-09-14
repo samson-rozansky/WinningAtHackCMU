@@ -185,18 +185,16 @@ var layout = {
         <div class="info-box">
             <h2>Current Offers</h2>
             {% if current_offer %}
-                <p>current_offer: {{ current_offer }}</p>
+              <p>current_offer: {{ current_offer }}</p>
+              <button id="cancel-offer">Cancel Offer</button>
             {% else %}
                 <p>No Offer Made</p>
             {% endif %}
-            <button id="cancel-offer">Cancel Offer</button>
 
-            {% if pending_transaction is not none %}
             <div id="accept-notif">
-               <span>{{ pending_transaction.name }} ({{ pending_transaction.id }}) has accepted your offer.</span>
-                <button id="accept-notif-proceed">Press to Proceed</button>
+              <p> {{ transaction.name }} ({{ transaction.id }}) has accepted your offer.
+              <button id="accept-proceed">Press to Proceed</button>
             </div>
-            {% endif %}
         </div>
 
         <!-- Transaction History -->
@@ -237,16 +235,28 @@ var layout = {
         });
         
         // Additional functionality for cancel offer and accept notification
-        document.getElementById("cancel-offer").addEventListener("click", function() {
+      document.getElementById("cancel-offer").addEventListener("click", function() {
           fetch('/cancel-offer', {
               method: 'POST'
           })
           .then(response => {
-          if (response.redirected) {
-              window.location.href = response.url;  // Follow the redirect in JavaScript
-          }
-        })
-        .catch(error => console.error('Error:', error));
+            if (response.redirected) {
+                window.location.href = response.url;  // Follow the redirect in JavaScript
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      });
+
+      document.getElementById("accept-proceed").addEventListener("click", function() {
+          fetch('/accept-proceed', {
+              method: 'POST'
+          })
+          .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;  // Follow the redirect in JavaScript
+            }
+          })
+          .catch(error => console.error('Error:', error));
       });
 
       document.getElementById("accept-notif-proceed").addEventListener("click", function() {
