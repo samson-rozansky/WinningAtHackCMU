@@ -20,8 +20,25 @@
     </header>
 
     <h1>You found a Match!</h1>
-    <h2>Buyer information: {{ buyer.contactInfo }}</h2>
-    <h2>Seller information: {{ seller.contactInfo }}</h2>
-
+    <bf>Buyer Information</bf>
+    <ul>
+      <li> Name: {{ buyer.name }}
+      <li> Andrew ID: {{ buyer.id }}
+      {% for key, value in buyer.contactInfo.items() %}
+          {% if value != '' %}
+              <li>{{ key }}: {{ value }}</li>
+          {% endif %}
+      {% endfor %}
+    </ul>
+    <bf>Seller Information</bf>
+    <ul>
+      <li> Name: {{ seller.name }}
+      <li> Andrew ID: {{ seller.id }}
+      {% for key, value in seller.contactInfo.items() %}
+          {% if value != '' %}
+              <li>{{ key }}: {{ value }}</li>
+          {% endif %}
+      {% endfor %}
+    </ul>
 </body>
 </html>
