@@ -1,22 +1,58 @@
-from typing import NamedTuple
+from typing import Optional
 
-class AbstractTransaction(NamedTuple):
-  name: str
-  id: str
-  payment_method: str
-  time: str
+class AbstractTransaction:
+  def __init__(self, name: str, id: str, payment: str,
+               time: float):
+    self.name = name
+    self.id = id
+    self.payment = payment
+    self.time = time
 
-class BuyTransaction(AbstractTransaction):
-  max_price: float
+class Buyer(AbstractTransaction):
+  def __init__(self, name: str, id: str, payment: str, 
+               time: float, max_price: float):
+    super().__init__(name, id, payment, time)
+    self.max_price = max_price
 
-class SellTransaction(AbstractTransaction):
-  min_price: float
+
+class Seller(AbstractTransaction):
+  def __init__(self, name: str, id: str, payment: str, 
+               time: float, min_price: float):
+    super().__init__(name, id, payment, time)
+    self.min_price = min_price
 
 class Matcher:
 
   def __init__(self):
     self._queued_buyers = []
     self._queued_sellers = []
+    self._log = []
 
-  def reduce_matches(self) -> : 
+  def get_min_seller(self) -> Optional[Seller]:
+    min_price = 1000
+    min_seller = None
+    for seller in self._queued_sellers:
+      if seller.min_price < min_price:
+        min_price = seller.min_price
+        min_seller = seller
+    return min_seller
+  
+  def get_max_buyer(self) -> Optional[Buyer]:
+    max_price = 0
+    max_buyer = None
+    for buyer in self._queued_buyers:
+      if buyer.max_price > max_price:
+        max_price = buyer.max_price
+        max_buyer = buyer
+    return max_buyer
+  
+  def add_buyer(self, buyer: Buyer):
+    self._queued_buyers.append(buyer)
+    self._log.append(f"{buyer.name} ({buyer.id}) placed an order for a block for at most {buyer.max_price}")
 
+  def add_seller(self, seller: Seller):
+    self._queued_sellers.append(seller)
+    self._log.append(f"{seller.name} ({seller.id}) is selling a block for at least {seller.min_price}")
+
+  def log(self):
+    return self._log

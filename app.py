@@ -6,7 +6,8 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key to use sessions
 socketio = SocketIO(app)
 
-# In-memory transaction store
+from backend.matcher import Buyer, Seller, Matcher
+matcher = Matcher()
 transactions = []
 
 @app.route('/')
@@ -31,7 +32,9 @@ def main_page():
   # Ensure user is logged in
   if 'name' not in session:
     return redirect(url_for('login'))
-  return render_template('index.html', transactions=transactions, user_name=session['name'])
+  return render_template('index.html', 
+                         log="\n".join(matcher.log()), 
+                         user_name=session['name'])
 
 @app.route('/submit', methods=['POST'])
 def submit_transaction():
@@ -40,35 +43,35 @@ def submit_transaction():
     return redirect(url_for('login'))
 
   # Get form data
-  id = session['id']
   name = session['name']
+  id = session['id']
   role = request.form['role']
   price = request.form['price']
   payment = request.form['payment']
   contact_info = request.form['contactInfo']
-
-  print(id, name, role, payment, contact_info)
-
-  # Add new transaction
-  transaction = {
-    'id': id,
-    'name': name,
-    'role': role,
-    'price': price,
-    'payment': payment,
-    'contactInfo': contact_info,
-    'date': datetime.now()
-  }
-
-  transactions.append(transaction)
-
-  # Emit real-time notifications
-  if role == 'buyer':
-    socketio.emit('notifySeller', {'buyer': transaction, 'seller': transaction})
-  elif role == 'seller':
-    socketio.emit('notifyBuyer', {'buyer': transaction, 'seller': transaction})
+  
+  if role == "buyer": 
+    transaction = Buyer(
+      name=name,
+      id=id,
+      payment=payment,
+      time=0., # placeholder
+      max_price = float(price),
+    )
+    matcher.add_buyer(transaction)
+  elif role == "seller":
+    transaction = Seller(
+      name=name,
+      id=id,
+      payment=payment,
+      time=0., # placeholder
+      min_price = float(price),
+    )
+    matcher.add_seller(transaction)
+  else:
+    raise RuntimeError("Unrecognized Role")
 
   return redirect(url_for('main_page'))
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+  socketio.run(app, host='0.0.0.0', port=8080, debug=True)
